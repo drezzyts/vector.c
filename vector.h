@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 typedef struct {
   void* data;
@@ -19,33 +20,20 @@ typedef struct {
 vector_t* vector_create(size_t);
 vector_t* vector_clone(const vector_t*);
 
-void vector_insert(vector_t*, void*, size_t);
+void vector_insert(vector_t*, const void*, size_t);
 void vector_resize(vector_t*, size_t);
-void vector_push(vector_t*, void*); 
+void vector_push(vector_t*, const void*); 
+
+void vector_lconcat(vector_t*, size_t, ...);
+void vector_aconcat(vector_t*, size_t, const void*);
+void vector_concat(vector_t*, const vector_t*);
+
 void vector_pop(vector_t*);
 void vector_shift(vector_t*);
 
 void* vector_last(const vector_t*);
 void* vector_first(const vector_t*);
 void* vector_at(const vector_t*, int64_t);
-
-
-vector_t* vector_create(size_t element_size) {
-  vector_t* vector = (vector_t*) malloc(sizeof(vector_t));
-  vector->data = (void*) malloc(element_size * VECTOR_INITIAL_CAPACITY);
-  vector->capacity = VECTOR_INITIAL_CAPACITY;
-  vector->size = 0;
-  vector->element_size = element_size;
-
-  return vector;
-};
-
-vector_t* vector_clone(const vector_t* source) {
-  vector_t* destination = (vector_t*) malloc(sizeof(vector_t));
-  memcpy(destination, source, sizeof(vector_t));
-  
-  return destination; 
-}
 
 void vector_resize(vector_t* vector, size_t capacity) {
   void* data = malloc(vector->element_size * capacity);
@@ -55,80 +43,6 @@ void vector_resize(vector_t* vector, size_t capacity) {
   
   vector->capacity = capacity;
   vector->data = data;
-}
-
-void vector_push(vector_t* vector, void* value) {
-  if (vector->capacity < vector->size)
-    vector_resize(vector, vector->capacity * 2);
-
-  uint8_t* bytes = (uint8_t*) vector->data;
-  memcpy(bytes + (vector->size * vector->element_size), value, vector->element_size);
-  vector->size++;
-}
-
-void vector_pop(vector_t* vector) {
-  if (vector->size < 1) return;
-
-  vector->size--;
-
-  void* data = malloc(vector->element_size * vector->size); 
-  memcpy(data, vector->data, vector->element_size * vector->size);  
-  free(vector->data);
-
-  vector->data = data;
-
-  if (vector->size <= vector->capacity / 4)
-    vector_resize(vector, vector->capacity / 2);
-}
-
-void vector_shift(vector_t* vector) {
-  if (vector->size < 1) return;
-  vector->size--;
-
-  void* data = malloc(vector->element_size * vector->size);
-  uint8_t* bytes = (uint8_t*) vector->data;
-
-  memcpy(data, bytes + vector->element_size, vector->size * vector->element_size);
-  free(vector->data);
-
-  vector->data = data;
-
-  if (vector->size <= vector->capacity / 4)
-    vector_resize(vector, vector->capacity / 2);
-}
-
-void vector_insert(vector_t* vector, void* value, size_t index) {
-  if (vector->size <= index) return;
-  if (vector->size >= vector->capacity) 
-    vector_resize(vector, vector->capacity * 2);
-  
-  size_t l_size = vector->element_size * index;
-  size_t r_size = vector->element_size * (vector->size - index);
-
-  uint8_t* bytes = (uint8_t*) vector->data;
-  memmove(bytes + l_size + vector->element_size, bytes + l_size, r_size);
-  memcpy(bytes + l_size, value, vector->element_size);
-
-  vector->size++;
-}
-
-void* vector_at(const vector_t* vector, int64_t index) {
-  if (abs(index) > vector->size) return NULL;
-
-  const uint8_t* bytes = (uint8_t*) vector->data;
-  return (void*) (bytes + ((index < 0 ? vector->size + index : index) * vector->element_size));
-};
-
-void* vector_last(const vector_t* vector) {
-  if (vector->size < 1) return NULL;
-
-  const uint8_t* bytes = (uint8_t*) vector->data;
-  return (void*) (bytes + (vector->size - 1) * (vector->element_size));
-}
-
-void* vector_first(const vector_t* vector) {
-  if (vector->size < 1) return NULL;
-  return vector->data;
 }
 
 #endif
