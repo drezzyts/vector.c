@@ -103,23 +103,17 @@ void* vector_at(const vector_t*, int64_t);
 **Examples:**
 
 ```c
-// creating the vector
 vector_t* vector = vector_create(sizeof(int));
 
-// pushing some values
-vector_push(vector, &(int){10});
-vector_push(vector, &(int){20});
-vector_push(vector, &(int){30});
-
-// getting the first element of a vector
+// ... getting the first element of a vector
 int* f1 = (int*) vector_first(vector);
 int* f2 = (int*) vector_at(vector, 0);
 
-// getting the last element of a vector
+// ... getting the last element of a vector
 int* l1 = (int*) vector_last(vector);
 int* l2 = (int*) vector_at(vector, -1);
 
-// getting element at specific index of a vector
+// ... getting element at specific index of a vector
 int* v1 = (int*) vector_at(vector, 2);
 int* v2 = (int*) vector_at(vector, -3);
 ```
