@@ -25,9 +25,10 @@ void vector_push(vector_t*, void*);
 void vector_pop(vector_t*);
 void vector_shift(vector_t*);
 
-void* vector_at(const vector_t*, int64_t);
 void* vector_last(const vector_t*);
 void* vector_first(const vector_t*);
+void* vector_at(const vector_t*, int64_t);
+
 
 vector_t* vector_create(size_t element_size) {
   vector_t* vector = (vector_t*) malloc(sizeof(vector_t));
