@@ -22,8 +22,9 @@ vector_t* vector_clone(const vector_t*);
 void vector_resize(vector_t*, size_t);
 void vector_push(vector_t*, void*); 
 void vector_pop(vector_t*);
+void vector_insert(vector_t*, void*, size_t);
 
-void* vector_at(const vector_t*, size_t);
+void* vector_at(const vector_t*, int64_t);
 void* vector_last(const vector_t*);
 void* vector_first(const vector_t*);
 
@@ -78,11 +79,26 @@ void vector_pop(vector_t* vector) {
     vector_resize(vector, vector->capacity / 2);
 }
 
-void* vector_at(const vector_t* vector, size_t index) {
-  if (index >= vector->size) return NULL;
+void vector_insert(vector_t* vector, void* value, size_t index) {
+  if (vector->size <= index) return;
+  if (vector->size >= vector->capacity) 
+    vector_resize(vector, vector->capacity * 2);
+  
+  size_t l_size = vector->element_size * index;
+  size_t r_size = vector->element_size * (vector->size - index);
+
+  uint8_t* bytes = (uint8_t*) vector->data;
+  memmove(bytes + l_size + vector->element_size, bytes + l_size, r_size);
+  memcpy(bytes + l_size, value, vector->element_size);
+
+  vector->size++;
+}
+
+void* vector_at(const vector_t* vector, int64_t index) {
+  if (abs(index) > vector->size) return NULL;
 
   const uint8_t* bytes = (uint8_t*) vector->data;
-  return (void*) (bytes + (index * vector->element_size));
+  return (void*) (bytes + ((index < 0 ? vector->size + index : index) * vector->element_size));
 };
 
 void* vector_last(const vector_t* vector) {
