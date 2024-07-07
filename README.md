@@ -118,3 +118,30 @@ int* v1 = (int*) vector_at(vector, 2);
 int* v2 = (int*) vector_at(vector, -3);
 ```
 
+### Concating structures
+
+To concat a structure into a `vector.c` vector, you can use `vector_concat`, `vector_aconcat` or `vector_lconcat` functions. See examples below:
+
+**Prototypes:**
+
+```c
+void vector_lconcat(vector_t*, size_t, ...);
+void vector_aconcat(vector_t*, size_t, const void*);
+void vector_concat(vector_t*, const vector_t*);
+```
+
+**Examples:**
+
+```c
+vector_t* vec1 = vector_create(sizeof(int));
+vector_t* vec2 = vector_clone(vec1);
+
+// ... concating a array into a vector
+vector_aconcat(vec1, 5, &(int){1, 2, 3, 4, 5});
+
+// ... concating a list into a vector
+vector_lconcat(vec2, 2, &(int){6}, &(int){7});
+
+// ... concating a vector into a other vector
+vector_concat(vec1, vec2);
+```
