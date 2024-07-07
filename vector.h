@@ -19,10 +19,11 @@ typedef struct {
 vector_t* vector_create(size_t);
 vector_t* vector_clone(const vector_t*);
 
+void vector_insert(vector_t*, void*, size_t);
 void vector_resize(vector_t*, size_t);
 void vector_push(vector_t*, void*); 
 void vector_pop(vector_t*);
-void vector_insert(vector_t*, void*, size_t);
+void vector_shift(vector_t*);
 
 void* vector_at(const vector_t*, int64_t);
 void* vector_last(const vector_t*);
@@ -71,6 +72,22 @@ void vector_pop(vector_t* vector) {
 
   void* data = malloc(vector->element_size * vector->size); 
   memcpy(data, vector->data, vector->element_size * vector->size);  
+  free(vector->data);
+
+  vector->data = data;
+
+  if (vector->size <= vector->capacity / 4)
+    vector_resize(vector, vector->capacity / 2);
+}
+
+void vector_shift(vector_t* vector) {
+  if (vector->size < 1) return;
+  vector->size--;
+
+  void* data = malloc(vector->element_size * vector->size);
+  uint8_t* bytes = (uint8_t*) vector->data;
+
+  memcpy(data, bytes + vector->element_size, vector->size * vector->element_size);
   free(vector->data);
 
   vector->data = data;
