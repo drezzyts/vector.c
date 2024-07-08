@@ -30,6 +30,7 @@ void vector_concat(vector_t*, const vector_t*);
 
 void vector_pop(vector_t*);
 void vector_shift(vector_t*);
+void vector_remove(vector_t*, size_t);
 
 void* vector_last(const vector_t*);
 void* vector_first(const vector_t*);

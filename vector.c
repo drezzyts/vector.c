@@ -91,6 +91,26 @@ void vector_shift(vector_t* vector) {
     vector_resize(vector, vector->capacity / 2);
 }
 
+void vector_remove(vector_t* vector, size_t index) {
+  if (index >= vector->size || index < 0) return;
+  
+  if (index == vector->size - 1) return vector_pop(vector);
+  if (index == 0) return vector_shift(vector);
+
+  vector->size--;
+
+  void* data = malloc(vector->element_size * vector->size);
+  size_t l_size = vector->element_size * index;
+  size_t r_size = (vector->element_size * vector->size) - l_size;
+  
+  uint8_t* bytes = (uint8_t*) vector->data;
+  memcpy(data, bytes, l_size);
+  memcpy((uint8_t*) data + l_size, bytes + l_size + vector->element_size, r_size);
+  free(vector->data);
+
+  vector->data = data;
+}
+
 void vector_insert(vector_t* vector, const void* value, size_t index) {
   if (vector->size <= index) return;
   if (vector->size >= vector->capacity) 
