@@ -142,7 +142,7 @@ vector_t* vec1 = vector_create(sizeof(int));
 vector_t* vec2 = vector_clone(vec1);
 
 // ... concating a array into a vector
-vector_aconcat(vec1, 5, &(int){1, 2, 3, 4, 5});
+vector_aconcat(vec1, 5, &(int[]){1, 2, 3, 4, 5});
 
 // ... concating a list into a vector
 vector_lconcat(vec2, 2, &(int){6}, &(int){7});
