@@ -149,7 +149,7 @@ vector_lconcat(vec2, 2, &(int){6}, &(int){7});
 vector_concat(vec1, vec2);
 ```
 
-### Removing values
+### Deleting specific values
 
 To remove a value into a `vector.c`, you can use `vector_remove` or `vector_delete` functions. See the examples below:
 
