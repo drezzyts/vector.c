@@ -44,7 +44,7 @@ vector_t *vector_create(size_t);
 vector_t *vector_clone(const vector_t *);
 
 void vector_insert(vector_t *, const void *, size_t);
-void vector_resize(vector_t *, size_t);
+void __vector_resize(vector_t *, size_t);
 void vector_push(vector_t *, const void *);
 
 void vector_lconcat(vector_t *, size_t, ...);
@@ -84,7 +84,7 @@ bool __vector_float_cmp(const void* expected, const void* current) {
 
 bool __vector_string_cmp(const void* expected, const void* current) {
   if (expected == NULL || current == NULL) return false;
-  return strcmp((const char*) expected, (const char*) current) == 0;
+  return strcmp(*(char**) expected, *(char**) current) == 0 ? true : false;
 }
 
 bool __vector_char_cmp(const void* expected, const void* current) {

@@ -35,8 +35,11 @@ vector_t* vector_clone(const vector_t*);
 **Examples:**
 
 ```c
-// creating a int vector
-vector_t* vector = vector_create(sizeof(int));
+// creating vectors
+vector_t* int_vec = vector_create(sizeof(int));
+vector_t* float_vec = vector_create(sizeof(float));
+vector_t* char_vec = vector_create(sizeof(char));
+vector_t* string_vec = vector_create(sizeof(char**));
 
 // creating a clone of vector
 vector_t* clone = vector_clone(vector);
@@ -144,4 +147,28 @@ vector_lconcat(vec2, 2, &(int){6}, &(int){7});
 
 // ... concating a vector into a other vector
 vector_concat(vec1, vec2);
+```
+
+### Removing values
+
+To remove a value into a `vector.c`, you can use `vector_remove` or `vector_delete` functions. See the examples below:
+
+**Prototypes:**
+
+```c
+void vector_delete(vector_t*, size_t);
+void vector_remove(vector_t*, const void*, bool (*)(const void*, const void*));
+```
+
+**Examples:**
+
+```c
+// ... deleting a value by index
+vector_delete(vector, 1);
+
+// ... removing a value by value comparison
+vector_remove(vector, &(int){2}, VECTOR_INT_COMPARE);
+vector_remove(vector, &(float){3.5}, VECTOR_FLOAT_COMPARE);
+vector_remove(vector, &(char){'H'}, VECTOR_CHAR_COMPARE);
+vector_remove(vector, &(char*){"Hello, World!"}, VECTOR_STRING_COMPARE);
 ```
