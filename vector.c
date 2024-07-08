@@ -20,7 +20,7 @@ vector_t* vector_clone(const vector_t* source) {
 
 void vector_push(vector_t* vector, const void* value) {
   if (vector->capacity < vector->size)
-    vector_resize(vector, vector->capacity * 2);
+    __vector_resize(vector, vector->capacity * 2);
 
   uint8_t* bytes = (uint8_t*) vector->data;
   memcpy(bytes + (vector->size * vector->element_size), value, vector->element_size);
@@ -50,7 +50,7 @@ void vector_concat(vector_t* destination, const vector_t* source) {
   size_t dsize = destination->size * destination->element_size;
   size_t ssize = source->size * source->element_size;
 
-  vector_resize(destination, destination->capacity + source->capacity);
+  __vector_resize(destination, destination->capacity + source->capacity);
   destination->size += source->size;
 
   uint8_t* dbytes = (uint8_t*) destination->data;
@@ -72,7 +72,7 @@ void vector_pop(vector_t* vector) {
   vector->data = data;
 
   if (vector->size <= vector->capacity / 4)
-    vector_resize(vector, vector->capacity / 2);
+    __vector_resize(vector, vector->capacity / 2);
 }
 
 void vector_shift(vector_t* vector) {
@@ -88,10 +88,10 @@ void vector_shift(vector_t* vector) {
   vector->data = data;
 
   if (vector->size <= vector->capacity / 4)
-    vector_resize(vector, vector->capacity / 2);
+    __vector_resize(vector, vector->capacity / 2);
 }
 
-void vector_remove(vector_t* vector, size_t index) {
+void vector_delete(vector_t* vector, size_t index) {
   if (index >= vector->size || index < 0) return;
   
   if (index == vector->size - 1) return vector_pop(vector);
@@ -111,10 +111,30 @@ void vector_remove(vector_t* vector, size_t index) {
   vector->data = data;
 }
 
+void vector_remove(vector_t* vector, const void* expected, 
+  bool (*compare_function)(const void* expected, const void* current)) 
+{
+  int index = -1;
+
+  for (int i = 0; i < vector->size; i++) {
+    const void* current = vector_at(vector, i);
+    
+    bool is_equal = compare_function(expected, current);
+    if (!is_equal) continue;
+
+    index = i;
+    break;
+  }
+
+  if (index == -1) return;
+
+  vector_delete(vector, index);
+}
+
 void vector_insert(vector_t* vector, const void* value, size_t index) {
   if (vector->size <= index) return;
   if (vector->size >= vector->capacity) 
-    vector_resize(vector, vector->capacity * 2);
+    __vector_resize(vector, vector->capacity * 2);
   
   size_t l_size = vector->element_size * index;
   size_t r_size = vector->element_size * (vector->size - index);
@@ -131,7 +151,11 @@ void* vector_at(const vector_t* vector, int64_t index) {
 
   const uint8_t* bytes = (uint8_t*) vector->data;
   return (void*) (bytes + ((index < 0 ? vector->size + index : index) * vector->element_size));
-};
+}
+
+bool __vector_ecmp(const void* _v1, const void* _v2){
+  return false;
+}
 
 void* vector_last(const vector_t* vector) {
   if (vector->size < 1) return NULL;
