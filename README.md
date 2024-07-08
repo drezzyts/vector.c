@@ -10,6 +10,8 @@ Vector.c is a simple library that provides a dynamic array structure and methods
 * [Inserting values into a vector](#inserting-values-into-a-vector)
 * [Removing values of a vector](#removing-values-of-a-vector)
 * [Getting values of a vector](#getting-values-of-a-vector)
+* [Concating structures](#concating-structures)
+* [Deleting specific values](#deleting-specific-values)
 
 ## Usage
 
