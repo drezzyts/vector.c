@@ -153,8 +153,21 @@ void* vector_at(const vector_t* vector, int64_t index) {
   return (void*) (bytes + ((index < 0 ? vector->size + index : index) * vector->element_size));
 }
 
-bool __vector_ecmp(const void* _v1, const void* _v2){
-  return false;
+int vector_findIndex(const vector_t* vector, const void* expected,
+  bool (*compare_function)(const void *expected, const void *current))
+{
+  int index = -1;
+
+  for (int i = 0; i < vector->size; i++) {
+    const void* current = vector_at(vector, i);
+    bool is_equal = compare_function(expected, current);
+    if (!is_equal) continue;
+    
+    index = i;
+    break;
+  }
+
+  return index;
 }
 
 void* vector_last(const vector_t* vector) {

@@ -61,6 +61,9 @@ void *vector_last(const vector_t *);
 void *vector_first(const vector_t *);
 void *vector_at(const vector_t *, int64_t);
 
+int vector_findIndex(const vector_t *, const void* expected,
+  bool (*compare_function)(const void* expected, const void* current));
+
 void __vector_resize(vector_t *vector, size_t capacity)
 {
   void *data = malloc(vector->element_size * capacity);

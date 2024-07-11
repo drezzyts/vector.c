@@ -95,7 +95,7 @@ vector_pop(vector);
 
 ### Getting values of a vector
 
-To get a value of a `vector.c` vector, you can use `vector_first`, `vector_last` or `vector_at` functions. See the examples below:
+To get a value of a `vector.c` vector, you can use `vector_first`, `vector_last` ,`vector_at` or `vector_findIndex` functions. See the examples below:
 
 **Prototypes:**
 
@@ -103,12 +103,18 @@ To get a value of a `vector.c` vector, you can use `vector_first`, `vector_last`
 void* vector_last(const vector_t*);
 void* vector_first(const vector_t*);
 void* vector_at(const vector_t*, int64_t);
+int vector_findIndex(const vector_t *, const void* expected,
+  bool (*compare_function)(const void* expected, const void* current));
 ```
 
 **Examples:**
 
 ```c
 vector_t* vector = vector_create(sizeof(int));
+
+// ... getting element by value
+int index = vector_findIndex(vector, &(int){5}, VECTOR_INT_COMPARE);
+int* value = (int*) vector_at(vector, index);
 
 // ... getting the first element of a vector
 int* f1 = (int*) vector_first(vector);
